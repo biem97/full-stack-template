@@ -6,6 +6,10 @@ version: "3.6"
 #   redis-volume:
 
 networks:
+  frontend:
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24
   backend:
     ipam:
       config:
@@ -58,8 +62,8 @@ services:
       - backend
     volumes:
       - ./server:/app
-    ports:
-      - 5000:5000
+    # ports:
+    # - 5000:5000
     # environment:
     # depends_on:
     #   - postgres
@@ -74,11 +78,27 @@ services:
       - backend
     volumes:
       - ./client:/app
-    ports:
-      - 3000:3000
     depends_on:
       - server
+    # ports:
+    # - 3000:3000
     # environment:
     # NODE_ENV: *global_env
     # PORT: 5000
     # REACT_APP_API_ENDPOINT: *graphbridge_ip
+
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    # volumes:
+    #   - certs-volume:/etc/ssl/keys
+    networks:
+      - frontend
+      - backend
+    ports:
+      - 8080:8080
+    depends_on:
+      - server
+      - client

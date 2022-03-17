@@ -8,7 +8,9 @@ const Home: NextPage = () => {
   useEffect(() => {
     async function fetchAPI() {
       console.log("fetching api");
-      const response = await fetch("http://localhost:5000/");
+      // Reverse proxy nginx
+      const response = await fetch("http://localhost:8080/api");
+      // const response = await fetch("http://localhost:5000/");
       const json = await response.json();
       console.log("Message: ", json);
     }
@@ -26,7 +28,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to <a href="https://nextjs.org">Next.js!!</a>
         </h1>
 
         <p className={styles.description}>
