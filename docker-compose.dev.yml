@@ -1,79 +1,79 @@
 # docker-compose version
-version: "2.3"
+version: "3.6"
 
-volumes:
-  postgres-volume:
-  redis-volume:
+# volumes:
+#   postgres-volume:
+#   redis-volume:
 
 networks:
   backend:
     ipam:
       config:
         - subnet: 172.31.1.0/24
-  postgres:
-    ipam:
-      config:
-        - subnet: 172.31.2.0/24
-  redis:
-    ipam:
-      config:
-        - subnet: 172.31.3.0/24
+#   postgres:
+#     ipam:
+#       config:
+#         - subnet: 172.31.2.0/24
+#   redis:
+#     ipam:
+#       config:
+#         - subnet: 172.31.3.0/24
 
 services:
-  redis:
-    image: bitnami/redis:6.2
-    restart: always
-    networks:
-      - redis
-    volumes:
-      - redis-volume:/bitnami/redis/data
-    environment:
-      REDIS_PASSWORD: redispassword
+  # redis:
+  #   image: bitnami/redis:6.2
+  #   restart: always
+  #   networks:
+  #     - redis
+  #   volumes:
+  #     - redis-volume:/bitnami/redis/data
+  #   environment:
+  #     REDIS_PASSWORD: redispassword
 
-  postgres:
-    image: postgres:10.5
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=lireddit
-    networks:
-      - postgres
-    logging:
-      options:
-        max-size: 10m
-        max-file: "3"
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-      # copy the sql script to create tables
-      # - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+  # postgres:
+  #   image: postgres:10.5
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=lireddit
+  #   networks:
+  #     - postgres
+  #   logging:
+  #     options:
+  #       max-size: 10m
+  #       max-file: "3"
+  #   volumes:
+  #     - ./postgres-data:/var/lib/postgresql/data
+  # copy the sql script to create tables
+  # - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
 
   server:
     build:
-      context: ./server # where to look
-      dockerfile: Dockerfile.dev # what dockerfile
+      context: ./server
+      dockerfile: Dockerfile.dev
     networks:
-      - postgres
-      - redis
+      #   - postgres
+      #   - redis
       - backend
     volumes:
       - ./server:/app
     ports:
-      - 4000:4000
+      - 5000:5000
     # environment:
-    depends_on:
-      - postgres
-      - redis
+    # depends_on:
+    #   - postgres
+    #   - redis
 
   client:
     stdin_open: true # needed to allow react-scripts to watch for changes
     build:
-      dockerfile: Dockerfile.dev
       context: ./client
+      dockerfile: Dockerfile.dev
     networks:
       - backend
     volumes:
-      - ./client:/app/
+      - ./client:/app
     ports:
       - 3000:3000
     # environment:

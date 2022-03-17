@@ -1,6 +1,6 @@
 *
-!public
-!src
+!public/
+!src/
 !next-env.d.ts
 !next.config.js
 !package.json
