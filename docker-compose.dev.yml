@@ -76,6 +76,8 @@ services:
       - ./client:/app
     ports:
       - 3000:3000
+    depends_on:
+      - server
     # environment:
     # NODE_ENV: *global_env
     # PORT: 5000
